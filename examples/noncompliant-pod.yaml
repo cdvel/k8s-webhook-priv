@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: noncompliant-pod
+  labels:
+    app: noncompliant-app
+spec:
+  # This pod runs as root (violates security policy)
+  securityContext:
+    runAsNonRoot: false  # This will be rejected
+    runAsUser: 0         # This will be rejected
+  containers:
+  - name: nginx-container
+    image: myregistry.com/nginx:latest  # Unapproved registry
+    ports:
+    - containerPort: 80
+    securityContext:
+      # No security context defined (will be added by mutation)
+      privileged: true  # This will be rejected by validation
+    # No resource limits or requests (will be added by mutation)

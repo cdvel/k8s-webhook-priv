@@ -1,0 +1,25 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: pod-mutating-webhook
+webhooks:
+- name: mutate.pods.security.io
+  rules:
+  - apiGroups: [""]
+    apiVersions: ["v1"]
+    resources: ["pods"]
+    operations: ["CREATE"]
+  clientConfig:
+    service:
+      namespace: webhook-system
+      name: admission-webhook
+      path: "/mutate"
+    caBundle: ""  # This will be filled in by cert-manager or manually
+  admissionReviewVersions: ["v1", "v1beta1"]
+  sideEffects: None
+  timeoutSeconds: 10
+  failurePolicy: Ignore  # Change to Fail for production
+  namespaceSelector:
+    matchExpressions:
+    - key: admission.webhook.io/ignore
+      operator: DoesNotExist
