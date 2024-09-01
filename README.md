@@ -84,5 +84,3 @@ The webhook is designed for production deployment with:
 ## License
 
 MIT
-# README
-# README
